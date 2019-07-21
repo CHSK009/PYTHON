@@ -1,0 +1,447 @@
+{
+  "nbformat": 4,
+  "nbformat_minor": 0,
+  "metadata": {
+    "colab": {
+      "name": "Untitled13.ipynb",
+      "version": "0.3.2",
+      "provenance": [],
+      "include_colab_link": true
+    },
+    "kernelspec": {
+      "name": "python3",
+      "display_name": "Python 3"
+    },
+    "accelerator": "GPU"
+  },
+  "cells": [
+    {
+      "cell_type": "markdown",
+      "metadata": {
+        "id": "view-in-github",
+        "colab_type": "text"
+      },
+      "source": [
+        "<a href=\"https://colab.research.google.com/github/scznc/PYTHON/blob/master/lab%20task-6\" target=\"_parent\"><img src=\"https://colab.research.google.com/assets/colab-badge.svg\" alt=\"Open In Colab\"/></a>"
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "mHf2fjnV3Vjk",
+        "colab_type": "code",
+        "colab": {}
+      },
+      "source": [
+        "from keras.models import Sequential\n",
+        "from keras.layers.core import Dense,Activation,Flatten\n",
+        "import numpy\n",
+        "from keras.datasets import cifar10\n",
+        "from keras.models import Sequential\n",
+        "from keras.layers import Dense\n",
+        "from keras.layers import Dropout\n",
+        "from keras.layers import Flatten\n",
+        "from keras.constraints import maxnorm\n",
+        "from keras.optimizers import SGD\n",
+        "from keras.layers.convolutional import Conv2D\n",
+        "from keras.layers.convolutional import MaxPooling2D\n",
+        "from keras.utils import np_utils\n",
+        "from keras.callbacks import TensorBoard\n",
+        "from keras import backend as K"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "YAVWXt7K3YOf",
+        "colab_type": "code",
+        "colab": {}
+      },
+      "source": [
+        "model=Sequential()\n",
+        "model.add(Flatten(input_shape=(32,32,3)))\n",
+        "model.add(Dense(100))\n",
+        "model.add(Activation('relu'))\n",
+        "model.add(Dense(100))\n",
+        "model.add(Activation('relu'))\n"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "XscJEBPh3alo",
+        "colab_type": "code",
+        "colab": {}
+      },
+      "source": [
+        "import numpy as np\n",
+        "import matplotlib.pyplot as plt\n",
+        "from keras.datasets import fashion_mnist"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "EJCgwdHT3gp6",
+        "colab_type": "code",
+        "colab": {}
+      },
+      "source": [
+        "(x_train,y_train),(x_test,y_test)=fashion_mnist.load_data()"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "amxR9osr3i4D",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 87
+        },
+        "outputId": "71b19729-e40d-467e-a0d5-65208081ae4c"
+      },
+      "source": [
+        "print(x_train.shape)\n",
+        "print(y_train.shape)\n",
+        "print(x_test.shape)\n",
+        "print(x_test.shape)"
+      ],
+      "execution_count": 15,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "(60000, 28, 28)\n",
+            "(60000,)\n",
+            "(10000, 28, 28)\n",
+            "(10000, 28, 28)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "bKa95Roq3su2",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "outputId": "8f244ab5-6860-4124-d59d-259826f87941"
+      },
+      "source": [
+        "print(y_train[6])"
+      ],
+      "execution_count": 16,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "7\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "R6T1Sxj73uxt",
+        "colab_type": "code",
+        "colab": {}
+      },
+      "source": [
+        "import matplotlib.pyplot as plt\n",
+        "%matplotlib inline\n",
+        "def display(index):\n",
+        "    label=y_train[index].argmax(axis=0)\n",
+        "    print(label)\n",
+        "    image=x_train[index]\n",
+        "    plt.imshow(image,cmap='gray_r')\n",
+        "    plt.show()"
+      ],
+      "execution_count": 0,
+      "outputs": []
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "g0-fegH33xDT",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 322
+        },
+        "outputId": "5d620c1f-7b85-4fa8-b13d-4f210a36b095"
+      },
+      "source": [
+        "display(6)\n",
+        "print('trainshape',x_train.shape)\n",
+        "print('testshape',x_test.shape)"
+      ],
+      "execution_count": 18,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "0\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "display_data",
+          "data": {
+            "image/png": "iVBORw0KGgoAAAANSUhEUgAAAP8AAAD8CAYAAAC4nHJkAAAABHNCSVQICAgIfAhkiAAAAAlwSFlz\nAAALEgAACxIB0t1+/AAAADl0RVh0U29mdHdhcmUAbWF0cGxvdGxpYiB2ZXJzaW9uIDMuMC4zLCBo\ndHRwOi8vbWF0cGxvdGxpYi5vcmcvnQurowAAD19JREFUeJzt3V2sVfWZx/HfI4IgEOXlDOIBoTY6\nRjFDxyNOrJkw6bSx2gR7Y8oFYRIz9KIm09iLMYxmvODC6LRNjUoCIykdERgDBC7IDAyZxNQY4oEw\nilUHRg8pL3IO8QXwDYFnLs6iOcWz/v/N3mvvtenz/SQnZ+/17HXWcxbnx375r7X+5u4CEM8VdTcA\noB6EHwiK8ANBEX4gKMIPBEX4gaAIPxAU4QeCIvxAUFd2cmPTp0/3uXPndnKTQCgDAwM6ceKENfLY\nlsJvZvdK+pWkMZL+1d2fTD1+7ty56u/vb2WTABL6+voafmzTL/vNbIyk5yR9X9Ktkhab2a3N/jwA\nndXKe/4Fkg66+3vufkbSBkmLqmkLQLu1Ev5eSb8fcf9wseyPmNkyM+s3s/6hoaEWNgegSm3/tN/d\nV7l7n7v39fT0tHtzABrUSviPSJo94v6sYhmAy0Ar4X9d0k1m9g0zGyfpR5K2VdMWgHZreqjP3c+a\n2cOS/lPDQ31r3P2tyjoD0FYtjfO7+3ZJ2yvqBUAHcXgvEBThB4Ii/EBQhB8IivADQRF+ICjCDwRF\n+IGgCD8QFOEHgiL8QFCEHwiK8ANBEX4gKMIPBEX4gaAIPxAU4QeCIvxAUIQfCIrwA0ERfiAowg8E\nRfiBoAg/EBThB4Ii/EBQhB8IivADQbU0S6+ZDUg6JemcpLPu3ldFUwDar6XwF/7G3U9U8HMAdBAv\n+4GgWg2/S9phZnvMbFkVDQHojFZf9t/j7kfM7M8k7TSzd9z9lZEPKP5TWCZJN9xwQ4ubA1CVlp75\n3f1I8X1Q0hZJC0Z5zCp373P3vp6enlY2B6BCTYffzCaa2eQLtyV9T9L+qhoD0F6tvOyfIWmLmV34\nOS+5+39U0hWAtms6/O7+nqS/qLAXAB3EUB8QFOEHgiL8QFCEHwiK8ANBEX4gKMIPBEX4gaAIPxAU\n4QeCIvxAUIQfCIrwA0ERfiCoKq7eixa5e0vrF9dUGNW5c+eS615xRfr//9TPlqSzZ88m61de2b4/\nsfPnzyfrud+tnb766qtkPbVfcvu8KjzzA0ERfiAowg8ERfiBoAg/EBThB4Ii/EBQjPN3gXaO6+aO\nIWh12+0cx3/++eeT9RUrViTrR48erbKdSzJ27Njatt0onvmBoAg/EBThB4Ii/EBQhB8IivADQRF+\nIKjsIK2ZrZH0A0mD7j6vWDZV0kZJcyUNSHrQ3T9qX5uxtTJW385xeEl66aWXkvV9+/aV1l5++eXk\nuuPHj0/We3p6kvXFixeX1tavX59ct1VnzpxJ1p966qnS2mOPPVZ1O6Nq5Jn/15LuvWjZo5J2uftN\nknYV9wFcRrLhd/dXJH140eJFktYWt9dKeqDivgC0WbPv+We4+7Hi9geSZlTUD4AOafkDPx9+Q1r6\nptTMlplZv5n1Dw0Ntbo5ABVpNvzHzWymJBXfB8se6O6r3L3P3ftyH9AA6Jxmw79N0tLi9lJJW6tp\nB0CnZMNvZuslvSbpz83ssJk9JOlJSd81swOS/ra4D+Aykh0EdveywdLvVNzLn6xWz6lv5Zz7AwcO\nJOu5sfbXXnstWd+xY0eyfuONN5bWZs2alVx38uTJyfrAwECyvn379mS9nTZs2JCs7969u0OdlOMI\nPyAowg8ERfiBoAg/EBThB4Ii/EBQfzKX7m51uubcKZjjxo275J4uaPXy2B9//HGyvnz58tLaxo0b\nk+tOnDgxWZ85c2ayvmDBgmQ9NVX1Z599llz3lltuSdaPHDmSrD/++OPJesrgYOlBq5Ly+/WRRx5J\n1t95553S2p49e5Lr3nHHHcl6o3jmB4Ii/EBQhB8IivADQRF+ICjCDwRF+IGgLqtx/tSpsbnTZnNa\nGcfP2bVrV7K+adOmZD13eeypU6eW1m677bbkurlLe3/yySfJ+smTJ5P1CRMmlNZyxxj09/cn69dd\nd12yvm7dutLa008/nVw31bck3X777cn6l19+max/8cUXpbXcqcxV4ZkfCIrwA0ERfiAowg8ERfiB\noAg/EBThB4K6rMb5U+fFjxkzpq3bfuaZZ0prK1euTK57/PjxZH327NnJ+rx585L11Fh9bts5rV5W\nPHX8Re4aC7kZnnLHGKTcfffdyfqWLVua/tmStGLFimT9ueeeK63NmTMnue6LL75YWssdXzASz/xA\nUIQfCIrwA0ERfiAowg8ERfiBoAg/EFR2nN/M1kj6gaRBd59XLHtC0t9LGioettzdW54Pee/evcn6\nzp07S2vvvvtuct3U+dOSdPTo0WT91KlTpbVrr702uW5uKurcOfO5sdvc+ilXX311sn727NlkPXcd\nhdRYfuqa/rl1pfw59+PHjy+t5abIzs1X8Omnnybrvb29yfrNN99cWsvNZ7B69erS2tDQUGntYo08\n8/9a0r2jLP+lu88vvuqbCB1AU7Lhd/dXJH3YgV4AdFAr7/kfNrM3zGyNmU2prCMAHdFs+FdK+qak\n+ZKOSfp52QPNbJmZ9ZtZ/6W8HwHQXk2F392Pu/s5dz8vabWk0tka3X2Vu/e5e1/uRA0AndNU+M1s\n5EehP5S0v5p2AHRKI0N96yUtlDTdzA5L+mdJC81sviSXNCDpx23sEUAbZMPv7otHWfxCMxsbHBzU\ns88+W1rfvHlzcv3PP/+8tJYbb85dlz835py6xnxu26dPn07Wc+PZubH41HEGuXH63Pn4ueMjcr97\n6hiF8+fPJ9dN/XtL+d7OnDlTWrvmmmuS6+auDzFlSvoz7rFjxybrqd8tdUxJlTjCDwiK8ANBEX4g\nKMIPBEX4gaAIPxBURy/dPW3aNC1ZsqS0fueddybXf/XVV0tr+/enjzM6dOhQsp4bXvnoo49Ka7lh\nwtw02Lkhr8HBwWT9xIkTpbXcMOK5c+eS9dRwmZT/3VuZOn3SpEnJem6K79Twbm4oLzcEmjpdWMrv\nt9Tw7VVXXZVc9/777y+tbd26NbnuSDzzA0ERfiAowg8ERfiBoAg/EBThB4Ii/EBQHZ+iOzXum5uK\n+q677mp6u7nLX7///vvJ+sGDB0trAwMDyXVzlwVv9bTZ1HECuXH+adOmJeuTJ09uaf3U6ca502pz\nl0TPneqcq6fkxulbOX5BkqZPn15ayx2/kDoGIXdsxEg88wNBEX4gKMIPBEX4gaAIPxAU4QeCIvxA\nUB0d5x8zZkxy7DY37fGxY8dKa62Ou06dOjVZX7hwYWktN06fu4xzTu6c+9S4b+5aAbne23m+f27b\nuUue56Z/S12jIXcdgty/We6S6LlptlPHT+Su/zBnzpzSWu5y5yPxzA8ERfiBoAg/EBThB4Ii/EBQ\nhB8IivADQWXH+c1stqTfSJohySWtcvdfmdlUSRslzZU0IOlBdy+/uH0Dcucx5+qtyI2PpsaFc9eA\nz41X5641kBuTTsmN0+eOA8j9bq1sP3dt/Ny1BHp7e5P11LEfuXH63D7P7Zfcfk+tn/s7v/7660tr\nEyZMSK47UiPP/Gcl/czdb5X0V5J+Yma3SnpU0i53v0nSruI+gMtENvzufszd9xa3T0l6W1KvpEWS\n1hYPWyvpgXY1CaB6l/Se38zmSvqWpN2SZrj7heNtP9Dw2wIAl4mGw29mkyRtkvRTdz85subDb65G\nfYNlZsvMrN/M+nPHYgPonIbCb2ZjNRz8de6+uVh83MxmFvWZkkadTdLdV7l7n7v39fT0VNEzgApk\nw2/DH8m+IOltd//FiNI2SUuL20slNT49KIDaNXJK77clLZH0ppntK5Ytl/SkpH83s4ckHZL0YHta\n7IzcEMmlDKFcbMqUKU2vC7RLNvzu/ltJZQOy36m2HQCdwhF+QFCEHwiK8ANBEX4gKMIPBEX4gaAI\nPxAU4QeCIvxAUIQfCIrwA0ERfiAowg8ERfiBoAg/EBThB4Ii/EBQhB8IivADQRF+ICjCDwRF+IGg\nCD8QFOEHgiL8QFCEHwiK8ANBEX4gKMIPBEX4gaCy4Tez2Wb232b2OzN7y8z+oVj+hJkdMbN9xdd9\n7W8XQFWubOAxZyX9zN33mtlkSXvMbGdR+6W7/0v72gPQLtnwu/sxSceK26fM7G1Jve1uDEB7XdJ7\nfjObK+lbknYXix42szfMbI2ZTSlZZ5mZ9ZtZ/9DQUEvNAqhOw+E3s0mSNkn6qbuflLRS0jclzdfw\nK4Ofj7aeu69y9z537+vp6amgZQBVaCj8ZjZWw8Ff5+6bJcndj7v7OXc/L2m1pAXtaxNA1Rr5tN8k\nvSDpbXf/xYjlM0c87IeS9lffHoB2aeTT/m9LWiLpTTPbVyxbLmmxmc2X5JIGJP24LR0CaItGPu3/\nrSQbpbS9+nYAdApH+AFBEX4gKMIPBEX4gaAIPxAU4QeCIvxAUIQfCIrwA0ERfiAowg8ERfiBoAg/\nEBThB4Iyd+/cxsyGJB0asWi6pBMda+DSdGtv3dqXRG/NqrK3Oe7e0PXyOhr+r23crN/d+2prIKFb\ne+vWviR6a1ZdvfGyHwiK8ANB1R3+VTVvP6Vbe+vWviR6a1YtvdX6nh9Afep+5gdQk1rCb2b3mtm7\nZnbQzB6to4cyZjZgZm8WMw/319zLGjMbNLP9I5ZNNbOdZnag+D7qNGk19dYVMzcnZpaudd9124zX\nHX/Zb2ZjJP2vpO9KOizpdUmL3f13HW2khJkNSOpz99rHhM3sryWdlvQbd59XLHtK0ofu/mTxH+cU\nd//HLuntCUmn6565uZhQZubImaUlPSDp71Tjvkv09aBq2G91PPMvkHTQ3d9z9zOSNkhaVEMfXc/d\nX5H04UWLF0laW9xeq+E/no4r6a0ruPsxd99b3D4l6cLM0rXuu0Rftagj/L2Sfj/i/mF115TfLmmH\nme0xs2V1NzOKGcW06ZL0gaQZdTYziuzMzZ100czSXbPvmpnxump84Pd197j7X0r6vqSfFC9vu5IP\nv2frpuGahmZu7pRRZpb+gzr3XbMzXletjvAfkTR7xP1ZxbKu4O5Hiu+Dkrao+2YfPn5hktTi+2DN\n/fxBN83cPNrM0uqCfddNM17XEf7XJd1kZt8ws3GSfiRpWw19fI2ZTSw+iJGZTZT0PXXf7MPbJC0t\nbi+VtLXGXv5It8zcXDaztGred10347W7d/xL0n0a/sT//yT9Ux09lPR1o6T/Kb7eqrs3Ses1/DLw\nKw1/NvKQpGmSdkk6IOm/JE3tot7+TdKbkt7QcNBm1tTbPRp+Sf+GpH3F131177tEX7XsN47wA4Li\nAz8gKMIPBEX4gaAIPxAU4QeCIvxAUIQfCIrwA0H9P4gVFW7hOaivAAAAAElFTkSuQmCC\n",
+            "text/plain": [
+              "<Figure size 432x288 with 1 Axes>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          }
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "trainshape (60000, 28, 28)\n",
+            "testshape (10000, 28, 28)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "lC8KZ2Jb30Vy",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 34
+        },
+        "outputId": "33b9e3cd-b48d-4c98-cd3f-918e75bd99a7"
+      },
+      "source": [
+        "from keras.utils import to_categorical\n",
+        "y_train=to_categorical(y_train,10)\n",
+        "y_test=to_categorical(y_test,10)\n",
+        "\n",
+        "\n",
+        "print(x_train.shape[:])\n",
+        "x_train=x_train.reshape(60000,28,28,1)\n",
+        "x_test=x_test.reshape(10000,28,28,1)\n"
+      ],
+      "execution_count": 19,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "(60000, 28, 28)\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "2uf8nHqm33cF",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 676
+        },
+        "outputId": "f94b1452-fe7f-406f-a5b7-500d91dc0669"
+      },
+      "source": [
+        "def model_build():\n",
+        "    model=Sequential()\n",
+        "    model.add(Conv2D(32,(3,3),activation='relu',input_shape=(28,28,1)))\n",
+        "    model.add(Flatten())\n",
+        "    model.add(Dense(64))\n",
+        "    model.add(Activation('relu'))\n",
+        "    model.add(Dropout(0.2))\n",
+        "    model.add(Dense(128))\n",
+        "    model.add(Activation('relu'))\n",
+        "    model.add(Dropout(0.2))\n",
+        "    model.add(Dense(10))\n",
+        "    model.add(Activation('softmax'))\n",
+        "    return model\n",
+        "model=model_build()\n",
+        "model.compile(optimizer='adam',loss='categorical_crossentropy',metrics=['accuracy'])\n",
+        "model.summary()"
+      ],
+      "execution_count": 20,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "W0721 04:59:48.286271 140196884248448 deprecation_wrapper.py:119] From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:133: The name tf.placeholder_with_default is deprecated. Please use tf.compat.v1.placeholder_with_default instead.\n",
+            "\n",
+            "W0721 04:59:48.297967 140196884248448 deprecation.py:506] From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3445: calling dropout (from tensorflow.python.ops.nn_ops) with keep_prob is deprecated and will be removed in a future version.\n",
+            "Instructions for updating:\n",
+            "Please use `rate` instead of `keep_prob`. Rate should be set to `rate = 1 - keep_prob`.\n",
+            "W0721 04:59:48.360258 140196884248448 deprecation_wrapper.py:119] From /usr/local/lib/python3.6/dist-packages/keras/optimizers.py:790: The name tf.train.Optimizer is deprecated. Please use tf.compat.v1.train.Optimizer instead.\n",
+            "\n",
+            "W0721 04:59:48.532212 140196884248448 deprecation_wrapper.py:119] From /usr/local/lib/python3.6/dist-packages/keras/backend/tensorflow_backend.py:3295: The name tf.log is deprecated. Please use tf.math.log instead.\n",
+            "\n"
+          ],
+          "name": "stderr"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "_________________________________________________________________\n",
+            "Layer (type)                 Output Shape              Param #   \n",
+            "=================================================================\n",
+            "conv2d_1 (Conv2D)            (None, 26, 26, 32)        320       \n",
+            "_________________________________________________________________\n",
+            "flatten_3 (Flatten)          (None, 21632)             0         \n",
+            "_________________________________________________________________\n",
+            "dense_5 (Dense)              (None, 64)                1384512   \n",
+            "_________________________________________________________________\n",
+            "activation_5 (Activation)    (None, 64)                0         \n",
+            "_________________________________________________________________\n",
+            "dropout_1 (Dropout)          (None, 64)                0         \n",
+            "_________________________________________________________________\n",
+            "dense_6 (Dense)              (None, 128)               8320      \n",
+            "_________________________________________________________________\n",
+            "activation_6 (Activation)    (None, 128)               0         \n",
+            "_________________________________________________________________\n",
+            "dropout_2 (Dropout)          (None, 128)               0         \n",
+            "_________________________________________________________________\n",
+            "dense_7 (Dense)              (None, 10)                1290      \n",
+            "_________________________________________________________________\n",
+            "activation_7 (Activation)    (None, 10)                0         \n",
+            "=================================================================\n",
+            "Total params: 1,394,442\n",
+            "Trainable params: 1,394,442\n",
+            "Non-trainable params: 0\n",
+            "_________________________________________________________________\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "fLxU9b9G3575",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 498
+        },
+        "outputId": "0ebed916-7ffa-49f4-8101-e7125bff76ef"
+      },
+      "source": [
+        "model.fit(x_train,y_train,batch_size=128,nb_epoch=10,verbose=1)"
+      ],
+      "execution_count": 21,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "/usr/local/lib/python3.6/dist-packages/ipykernel_launcher.py:1: UserWarning: The `nb_epoch` argument in `fit` has been renamed `epochs`.\n",
+            "  \"\"\"Entry point for launching an IPython kernel.\n",
+            "W0721 04:59:50.275554 140196884248448 deprecation.py:323] From /usr/local/lib/python3.6/dist-packages/tensorflow/python/ops/math_grad.py:1250: add_dispatch_support.<locals>.wrapper (from tensorflow.python.ops.array_ops) is deprecated and will be removed in a future version.\n",
+            "Instructions for updating:\n",
+            "Use tf.where in 2.0, which has the same broadcast rule as np.where\n"
+          ],
+          "name": "stderr"
+        },
+        {
+          "output_type": "stream",
+          "text": [
+            "Epoch 1/10\n",
+            "60000/60000 [==============================] - 10s 166us/step - loss: 9.7808 - acc: 0.3900\n",
+            "Epoch 2/10\n",
+            "60000/60000 [==============================] - 3s 48us/step - loss: 4.0593 - acc: 0.6428\n",
+            "Epoch 3/10\n",
+            "60000/60000 [==============================] - 3s 46us/step - loss: 0.4629 - acc: 0.8396\n",
+            "Epoch 4/10\n",
+            "60000/60000 [==============================] - 3s 47us/step - loss: 0.3555 - acc: 0.8725\n",
+            "Epoch 5/10\n",
+            "60000/60000 [==============================] - 3s 46us/step - loss: 0.2969 - acc: 0.8918\n",
+            "Epoch 6/10\n",
+            "60000/60000 [==============================] - 3s 48us/step - loss: 0.2577 - acc: 0.9030\n",
+            "Epoch 7/10\n",
+            "60000/60000 [==============================] - 3s 45us/step - loss: 0.2283 - acc: 0.9137\n",
+            "Epoch 8/10\n",
+            "60000/60000 [==============================] - 3s 46us/step - loss: 0.2120 - acc: 0.9214\n",
+            "Epoch 9/10\n",
+            "60000/60000 [==============================] - 3s 45us/step - loss: 0.1933 - acc: 0.9281\n",
+            "Epoch 10/10\n",
+            "60000/60000 [==============================] - 3s 45us/step - loss: 0.1770 - acc: 0.9342\n"
+          ],
+          "name": "stdout"
+        },
+        {
+          "output_type": "execute_result",
+          "data": {
+            "text/plain": [
+              "<keras.callbacks.History at 0x7f81d3a037f0>"
+            ]
+          },
+          "metadata": {
+            "tags": []
+          },
+          "execution_count": 21
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "8jDRPCCE4Bwt",
+        "colab_type": "code",
+        "colab": {
+          "base_uri": "https://localhost:8080/",
+          "height": 70
+        },
+        "outputId": "76378e07-a6aa-4948-ed56-7f4f456e5fd9"
+      },
+      "source": [
+        "score=model.evaluate(x_test.reshape(10000,28,28,1),y_test,batch_size=18,verbose=1)\n",
+        "print('TestScore:',score[0])\n",
+        "print('Test acc:',score[1])"
+      ],
+      "execution_count": 22,
+      "outputs": [
+        {
+          "output_type": "stream",
+          "text": [
+            "10000/10000 [==============================] - 1s 97us/step\n",
+            "TestScore: 0.4175657605607994\n",
+            "Test acc: 0.8797999922513962\n"
+          ],
+          "name": "stdout"
+        }
+      ]
+    },
+    {
+      "cell_type": "code",
+      "metadata": {
+        "id": "Yy9ZigLX52Nf",
+        "colab_type": "code",
+        "colab": {}
+      },
+      "source": [
+        ""
+      ],
+      "execution_count": 0,
+      "outputs": []
+    }
+  ]
+}
